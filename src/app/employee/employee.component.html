@@ -1,0 +1,139 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<form [formGroup]="addForm" id="addForm" name="addForm">
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>Employee Registration</p>
+      </div>
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="form-control" formControlName="employeeNumber" id="employeeNumber"
+                     placeholder="Employee Number *" maxlength="10"/>
+              <div style="color: darkred"
+                   *ngIf="addForm.controls['employeeNumber'].hasError('pattern') && addForm.controls['employeeNumber'].touched">
+                enter number only
+              </div>
+              <div
+                *ngIf="addForm.controls['employeeNumber'].hasError('required') && addForm.controls['employeeNumber'].touched">
+                employee number is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" formControlName="employeeName" id="employeeName"
+                     placeholder="Employee Name *" maxlength="100"/>
+              <div
+                *ngIf="addForm.controls['employeeName'].hasError('required') && addForm.controls['employeeName'].touched">
+                employee name is required.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="date" class="form-control" formControlName="dateOfJoining" id="dateOfJoining"
+                     placeholder="Date of Joining *" maxlength="10"/>
+              <div style="color: darkred"
+                   *ngIf="addForm.controls['dateOfJoining'].hasError('required') && addForm.controls['dateOfJoining'].touched">
+                date of joining is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <select id="department" class="form-control" name="department" formControlName="department">
+                <option value="" disabled selected>Department *</option>
+                <option *ngFor="let department of departmentsList" [value]="department.id">
+                  {{department.departmentCode}}
+                </option>
+              </select>
+              <div style="color: darkred"
+                   *ngIf="addForm.controls['department'].hasError('required') && addForm.controls['department'].touched">
+                department is required.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="form-control" formControlName="salary" id="salary" placeholder="Salary *"
+                     maxlength="10"/>
+              <div style="color: darkred"
+                   *ngIf="addForm.controls['salary'].hasError('pattern') && addForm.controls['salary'].touched">
+                enter number only
+              </div>
+              <div style="color: darkred"
+                   *ngIf="addForm.controls['salary'].hasError('required') && addForm.controls['salary'].touched">
+                salary is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" *ngIf="isSaveMode"  class="btnSubmit" (click)="onSave()">
+          Save
+        </button>
+        <button type="button" *ngIf="!isSaveMode" class="btnSubmit" (click)="onUpdate()">
+          update
+        </button>
+        <button type="button" class="btnReset" (click)="onClear()">Clear</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="nu-table-body">
+  <div class="note">
+    <h5 style="margin: auto"> Employees</h5>
+    <div class="row gy-5" style="position: relative; left: 55%">
+
+      <input style="width: 12%; height: 10%" class="form-control" type="search" [formControl]="NameOrNumberSearchControl" id="search"
+             placeholder="Name/Number">
+
+      <select style="width: 12%;" id="departmentSearch" class="form-control" name="departmentSearch"
+              [formControl]="departmentSearchControl">
+        <option value="" disabled selected>Department *</option>
+        <option *ngFor="let department of departmentsList" [value]="department.id">
+          {{department.departmentCode}}
+        </option>
+      </select>
+
+      <button type="button" class="form-control"style="width: 100px!important; height: 40px!important; text-align: center!important; display: inline-block;
+      font-size: 16px; border-radius: 12px; white-space: normal;" (click)="onSearch()">Search</button>
+
+      <button type="button" class="form-control" style="width: 100px!important; height: 40px!important; text-align: center!important; display: inline-block;
+      font-size: 16px; border-radius: 12px; white-space: normal;" (click)="onClearFilter()">Clear</button>
+    </div>
+  </div>
+
+
+
+
+  <div class="row" style="margin-left: 2%">
+
+    <table style="margin-left: 5px">
+      <thead>
+      <tr>
+        <th style="width: 200px; margin-left: 10px;font-size: 15px;"><u>Employee Number</u></th>
+        <th style="width: 150px; margin-left: 10px;font-size: 15px;"><u>Employee Name</u></th>
+        <th style="width: 150px; margin-left: 10px;font-size: 15px;"><u>Date Of Joining</u></th>
+        <th style="width: 150px; margin-left: 10px;font-size: 15px;"><u>Department</u></th>
+        <th style="width: 150px; margin-left: 10px;font-size: 15px;"><u>Salary</u></th>
+        <th style="width: 50px; margin-left: 10px;font-size: 15px;"><u>Edit</u></th>
+        <th style="width: 70px; margin-left: 10px;font-size: 15px;"><u>Delete</u></th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let employee of employeesList">
+        <td>{{employee.employeeNumber}}</td>
+        <td>{{employee.employeeName}}</td>
+        <td>{{employee.dateOfJoining}}</td>
+        <td>{{employee.department.description}}</td>
+        <td>{{employee.salary}}</td>
+        <td><a><i class="bi bi-pencil-square" (click)="editEmployee(employee)"></i></a></td>
+        <td><a><i class="bi bi-trash3-fill" (click)="deleteEmployee(employee)"></i></a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
